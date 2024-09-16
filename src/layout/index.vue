@@ -34,25 +34,29 @@ const classObj = computed(() => ({
   hideSidebar: !sidebar.value.opened,
   openSidebar: sidebar.value.opened,
   withoutAnimation: sidebar.value.withoutAnimation,
-  mobile: device.value === 'mobile'
+  mobile: device.value == 'mobile'
 }))
 
 const { width, height } = useWindowSize();
 const WIDTH = 992; // refer to Bootstrap's responsive design
 
-watchEffect(() => {
-  if (device.value === 'mobile' && sidebar.value.opened) {
-    useAppStore().closeSideBar({ withoutAnimation: false })
+watch(() => device.value, () => {
+  if (device.value == 'mobile' && sidebar.value.opened) {
+    useAppStore().closeSideBar({ withoutAnimation: true })
   }
+})
+
+watchEffect(() => {
   if (width.value - 1 < WIDTH) {
     useAppStore().toggleDevice('mobile')
-    useAppStore().closeSideBar({ withoutAnimation: true })
+    useAppStore().closeSideBar({ withoutAnimation: false })
   } else {
     useAppStore().toggleDevice('desktop')
   }
 })
 
 function handleClickOutside() {
+  console.log('click outside!')
   useAppStore().closeSideBar({ withoutAnimation: false })
 }
 

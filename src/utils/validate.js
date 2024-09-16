@@ -91,3 +91,14 @@ export function isArray(arg) {
   }
   return Array.isArray(arg)
 }
+export const require = (imgPath) => {
+  if(imgPath===undefined){
+    return
+  }
+  try {
+    const handlePath = imgPath.replace('@', '..');
+    return new URL(handlePath, import.meta.url).href;
+  } catch (error) {
+    console.warn(error);
+  }
+}

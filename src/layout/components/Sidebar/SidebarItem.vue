@@ -2,9 +2,9 @@
   <div v-if="!item.hidden">
     <template v-if="hasOneShowingChild(item.children, item) && (!onlyOneChild.children || onlyOneChild.noShowingChildren) && !item.alwaysShow">
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path, onlyOneChild.query)">
-        <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{ 'submenu-title-noDropdown': !isNest }">
+        <el-menu-item @click="closeMenu()" :index="resolvePath(onlyOneChild.path)" :class="{ 'submenu-title-noDropdown': !isNest }">
           <svg-icon :icon-class="onlyOneChild.meta.icon || (item.meta && item.meta.icon)"/>
-          <template #title><span class="menu-title" :title="hasTitle(onlyOneChild.meta.title)">{{ onlyOneChild.meta.title }}</span></template>
+          <template  #title><span class="menu-title" :title="hasTitle(onlyOneChild.meta.title)">{{ onlyOneChild.meta.title }}</span></template>
         </el-menu-item>
       </app-link>
     </template>
@@ -31,6 +31,8 @@
 import { isExternal } from '@/utils/validate'
 import AppLink from './Link'
 import { getNormalPath } from '@/utils/ruoyi'
+import useAppStore from '@/store/modules/app'
+import { useWindowSize } from '@vueuse/core'
 
 const props = defineProps({
   // route object
@@ -79,6 +81,8 @@ function hasOneShowingChild(children = [], parent) {
 };
 
 function resolvePath(routePath, routeQuery) {
+
+  
   if (isExternal(routePath)) {
     return routePath
   }
@@ -86,9 +90,11 @@ function resolvePath(routePath, routeQuery) {
     return props.basePath
   }
   if (routeQuery) {
+    
     let query = JSON.parse(routeQuery);
     return { path: getNormalPath(props.basePath + '/' + routePath), query: query }
   }
+  
   return getNormalPath(props.basePath + '/' + routePath)
 }
 
@@ -98,5 +104,14 @@ function hasTitle(title){
   } else {
     return "";
   }
+}
+
+function closeMenu() {
+  const { width, height } = useWindowSize();
+  if (width._value < 768) {
+    console.log("小于768:")
+    useAppStore().closeSideBar({ withoutAnimation: false })
+  }
+  
 }
 </script>

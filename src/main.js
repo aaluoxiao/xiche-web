@@ -70,6 +70,8 @@ app.use(router)
 app.use(store)
 app.use(plugins)
 app.use(elementIcons)
+
+
 app.component('svg-icon', SvgIcon)
 
 directive(app)
@@ -80,5 +82,4 @@ app.use(ElementPlus, {
   // 支持 large、default、small
   size: Cookies.get('size') || 'default'
 })
-
 app.mount('#app')
